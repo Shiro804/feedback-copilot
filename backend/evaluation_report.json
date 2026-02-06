@@ -1,0 +1,76 @@
+{
+  "total_queries": 12,
+  "total_evaluations": 36,
+  "avg_precision": 0.0,
+  "avg_recall": 0.0,
+  "avg_mrr": 0.0,
+  "avg_response_time_ms": 388.43955596288043,
+  "avg_diversity": 0.10000000000000002,
+  "results_by_method": {
+    "vector": {
+      "avg_precision": 0.0,
+      "avg_recall": 0.0,
+      "avg_mrr": 0.0,
+      "avg_response_time_ms": 221.3440736134847,
+      "avg_diversity": 0.10000000000000002,
+      "num_queries": 12
+    },
+    "hybrid": {
+      "avg_precision": 0.0,
+      "avg_recall": 0.0,
+      "avg_mrr": 0.0,
+      "avg_response_time_ms": 311.0269109408061,
+      "avg_diversity": 0.10000000000000002,
+      "num_queries": 12
+    },
+    "hybrid+rerank": {
+      "avg_precision": 0.0,
+      "avg_recall": 0.0,
+      "avg_mrr": 0.0,
+      "avg_response_time_ms": 388.43955596288043,
+      "avg_diversity": 0.10000000000000002,
+      "num_queries": 12
+    }
+  },
+  "results_by_difficulty": {
+    "easy": {
+      "avg_precision": 0.0,
+      "avg_recall": 0.0,
+      "avg_mrr": 0.0,
+      "num_queries": 18
+    },
+    "medium": {
+      "avg_precision": 0.0,
+      "avg_recall": 0.0,
+      "avg_mrr": 0.0,
+      "num_queries": 9
+    },
+    "hard": {
+      "avg_precision": 0.0,
+      "avg_recall": 0.0,
+      "avg_mrr": 0.0,
+      "num_queries": 9
+    }
+  },
+  "category_distribution": {
+    "unknown": 360
+  },
+  "improvement_summary": {
+    "hybrid_vs_vector": {
+      "precision_improvement": "+-100.0%",
+      "recall_improvement": "+-100.0%",
+      "mrr_improvement": "+-100.0%"
+    },
+    "rerank_vs_hybrid": {
+      "precision_improvement": "+-100.0%",
+      "recall_improvement": "+-100.0%",
+      "mrr_improvement": "+-100.0%"
+    },
+    "rerank_vs_vector": {
+      "precision_improvement": "+-100.0%",
+      "recall_improvement": "+-100.0%",
+      "mrr_improvement": "+-100.0%"
+    }
+  },
+  "detailed_results_count": 36
+}

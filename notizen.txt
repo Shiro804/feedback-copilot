@@ -1,0 +1,3 @@
+- topic modelling 
+- https://docs.hpc.gwdg.de/services/chat-ai/index.html
+- jannis Daten

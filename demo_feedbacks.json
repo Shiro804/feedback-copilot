@@ -1,0 +1,102 @@
+[
+  {
+    "id": "DEMO-2026-101",
+    "text": "Das Head-up-Display spiegelt bei Sonnenschein so stark, dass ich nichts mehr erkennen kann.",
+    "source_type": "voice",
+    "language": "de",
+    "timestamp": "2026-01-16T08:30:00+01:00",
+    "vehicle_model": "ID.7",
+    "market": "DE",
+    "build_version": "3.6.0"
+  },
+  {
+    "id": "DEMO-2026-102",
+    "text": "Spotify Integration funktioniert super! Endlich werden meine Playlists richtig angezeigt.",
+    "source_type": "touch",
+    "language": "de",
+    "timestamp": "2026-01-16T09:15:00+01:00",
+    "vehicle_model": "ID.4",
+    "market": "DE",
+    "build_version": "3.6.0"
+  },
+  {
+    "id": "DEMO-2026-103",
+    "text": "The voice assistant now understands British English much better after the update!",
+    "source_type": "voice",
+    "language": "en",
+    "timestamp": "2026-01-16T10:00:00+00:00",
+    "vehicle_model": "ID.3",
+    "market": "UK",
+    "build_version": "3.6.0"
+  },
+  {
+    "id": "DEMO-2026-104",
+    "text": "Aktualizacja oprogramowania trwała ponad 3 godziny. Czy to normalne?",
+    "source_type": "touch",
+    "language": "pl",
+    "timestamp": "2026-01-16T11:30:00+01:00",
+    "vehicle_model": "ID.5",
+    "market": "PL",
+    "build_version": "3.5.2"
+  },
+  {
+    "id": "DEMO-2026-105",
+    "text": "Meine Telefonnummer ist 0171-1234567 und die App synchronisiert Kontakte nicht richtig.",
+    "source_type": "error",
+    "language": "de",
+    "timestamp": "2026-01-16T12:00:00+01:00",
+    "vehicle_model": "ID.Buzz",
+    "market": "DE",
+    "build_version": "3.5.1"
+  },
+  {
+    "id": "DEMO-2026-106",
+    "text": "Parking sensors give false alarms when it's raining. Very annoying in the UK weather!",
+    "source_type": "voice",
+    "language": "en",
+    "timestamp": "2026-01-16T13:00:00+00:00",
+    "vehicle_model": "ID.4",
+    "market": "UK",
+    "build_version": "3.5.0"
+  },
+  {
+    "id": "DEMO-2026-107",
+    "text": "Die Massage-Funktion in den Sitzen ist großartig, aber die Einstellungen werden nicht gespeichert.",
+    "source_type": "touch",
+    "language": "de",
+    "timestamp": "2026-01-16T14:20:00+01:00",
+    "vehicle_model": "ID.7",
+    "market": "DE",
+    "build_version": "3.6.0"
+  },
+  {
+    "id": "DEMO-2026-108",
+    "text": "OTA-Update hat alle meine Fahrerprofile gelöscht. Ich bin Max Schmidt und musste alles neu einrichten.",
+    "source_type": "error",
+    "language": "de",
+    "timestamp": "2026-01-16T15:45:00+01:00",
+    "vehicle_model": "ID.3",
+    "market": "DE",
+    "build_version": "3.6.0"
+  },
+  {
+    "id": "DEMO-2026-109",
+    "text": "Lane assist keeps overcorrecting on narrow country roads. Had a few scary moments.",
+    "source_type": "voice",
+    "language": "en",
+    "timestamp": "2026-01-16T16:30:00+00:00",
+    "vehicle_model": "ID.5",
+    "market": "UK",
+    "build_version": "3.5.1"
+  },
+  {
+    "id": "DEMO-2026-110",
+    "text": "Endlich kann man die Lautstärke der Blinker einstellen! Das hat lange gefehlt.",
+    "source_type": "voice",
+    "language": "de",
+    "timestamp": "2026-01-16T17:00:00+01:00",
+    "vehicle_model": "ID.4",
+    "market": "DE",
+    "build_version": "3.6.0"
+  }
+]

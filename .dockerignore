@@ -1,0 +1,27 @@
+# Dependencies
+node_modules
+backend/__pycache__
+backend/.venv
+.venv
+
+# Build
+.next
+*.pyc
+__pycache__
+
+# VectorStore data (wird als Volume gemountet)
+backend/chroma_db
+
+# Development
+.git
+.gitignore
+*.md
+.env.local
+
+# IDE
+.vscode
+.idea
+
+# Docs
+docs/
+*.txt
