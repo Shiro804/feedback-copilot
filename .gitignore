@@ -1,6 +1,27 @@
 # Documentation folder
 docs/
 
+# Thesis / Presentation files
+CHEATSHEET_VW.md
+CHEATSHEET_VW.pdf
+PRAESENTATION_VW.md
+PRAESENTATION_VW.pdf
+PROTOTYP_DOKUMENTATION.md
+PROTOTYP_DOKUMENTATION.pdf
+prototyp_features.md
+
+# Thesis utility scripts
+analyze_screening.py
+create_literature_excel.py
+format_konzeptmatrix.py
+
+# Personal notes
+befehle.txt
+notizen.txt
+
+# Test files
+test_export.pdf
+
 # Dependencies
 node_modules/
 __pycache__/
