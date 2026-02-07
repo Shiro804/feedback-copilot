@@ -13,7 +13,7 @@ Literatur:
 - Schema-Validierung nach Onepager-Spezifikation
 """
 
-from fastapi import APIRouter, UploadFile, File, HTTPException
+from fastapi import APIRouter, UploadFile, File, HTTPException, Request
 from pydantic import BaseModel
 from typing import List, Optional, Dict, Any
 from services.pii import PIIService
@@ -91,6 +91,182 @@ async def ingest_feedbacks(request: IngestRequest):
         )
     except Exception as e:
         raise HTTPException(status_code=500, detail=str(e))
+
+
+@router.post("/stream")
+async def ingest_stream(
+    request: Request,
+    anonymize: bool = True
+):
+    """
+    Streaming JSONL-Ingest für Pipeline-Integration.
+    
+    Empfängt JSONL-Daten als Request Body (nicht File Upload).
+    Ideal für Integration mit externem ASR/NLP-Stack.
+    
+    Akzeptierte Formate:
+    1. JSONL (eine JSON pro Zeile):
+       {"text": "...", "label": "...", "vehicle_model": "...", ...}
+       {"text": "...", "label": "...", "vehicle_model": "...", ...}
+    
+    2. JSON-Array:
+       [{"text": "..."}, {"text": "..."}]
+    
+    Feldmapping für ASR-Pipeline:
+    - transcript → text
+    - emotion → style (anger→complaint, joy→praise)
+    - intent → label
+    - sentiment → sentiment (neu)
+    
+    Beispiel cURL:
+    curl -X POST http://localhost:8000/api/ingest/stream \\
+      -H "Content-Type: text/plain" \\
+      -d '{"text":"Navigation funktioniert nicht","label":"NAVIGATION"}'
+    """
+    import json
+    from datetime import datetime
+    
+    content_type = request.headers.get("content-type", "")
+    body = await request.body()
+    body_str = body.decode("utf-8")
+    
+    feedbacks = []
+    errors = []
+    
+    try:
+        # Versuche als JSON-Array zu parsen
+        if "application/json" in content_type or body_str.strip().startswith("["):
+            try:
+                data = json.loads(body_str)
+                if isinstance(data, list):
+                    for i, item in enumerate(data):
+                        fb = _parse_feedback_item(item, i)
+                        if fb:
+                            feedbacks.append(fb)
+                elif isinstance(data, dict):
+                    fb = _parse_feedback_item(data, 0)
+                    if fb:
+                        feedbacks.append(fb)
+            except json.JSONDecodeError as e:
+                errors.append(f"JSON Parse Error: {str(e)}")
+        else:
+            # JSONL-Parsing (eine JSON pro Zeile)
+            for i, line in enumerate(body_str.strip().split('\n')):
+                if not line.strip():
+                    continue
+                try:
+                    item = json.loads(line)
+                    fb = _parse_feedback_item(item, i)
+                    if fb:
+                        feedbacks.append(fb)
+                except json.JSONDecodeError as e:
+                    if len(errors) < 10:
+                        errors.append(f"Zeile {i}: {str(e)}")
+        
+        if not feedbacks:
+            raise HTTPException(status_code=400, detail="Keine gültigen Feedbacks gefunden")
+        
+        # PII-Anonymisierung und VectorStore
+        processed = []
+        pii_count = 0
+        
+        for fb in feedbacks:
+            text = fb.get("text", "")
+            
+            if anonymize:
+                anonymized_text, pii_info = pii_service.anonymize(text)
+                fb["text"] = anonymized_text
+                pii_count += len(pii_info)
+            
+            # Text mit Metadaten anreichern für bessere Suche
+            model = fb.get("vehicle_model", "")
+            market = fb.get("market", "")
+            source = fb.get("source_type", "voice")
+            label = fb.get("label", "")
+            
+            if model or market or label:
+                original_text = fb["text"]
+                fb["text"] = f"[{model}] [{market}] [{source}] [{label}] {original_text}"
+            
+            processed.append(fb)
+        
+        # In VectorStore speichern
+        added = await vectorstore.add_documents(processed)
+        
+        # Stats berechnen
+        stats = {
+            "by_label": {},
+            "by_model": {},
+            "by_market": {},
+            "by_source": {}
+        }
+        for fb in processed:
+            for key, stat_key in [("label", "by_label"), ("vehicle_model", "by_model"), 
+                                   ("market", "by_market"), ("source_type", "by_source")]:
+                if fb.get(key):
+                    stats[stat_key][fb[key]] = stats[stat_key].get(fb[key], 0) + 1
+        
+        return {
+            "success": True,
+            "processed": added,
+            "pii_anonymized": pii_count,
+            "errors": errors,
+            "stats": stats
+        }
+        
+    except HTTPException:
+        raise
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=f"Fehler: {str(e)}")
+
+
+def _parse_feedback_item(item: dict, index: int) -> dict:
+    """Parse ein Feedback-Item aus verschiedenen Quellformaten."""
+    from datetime import datetime
+    
+    if not item:
+        return None
+    
+    # Text aus verschiedenen Feldern
+    text = item.get("text") or item.get("transcript") or item.get("content") or ""
+    if not text:
+        return None
+    
+    # ID generieren falls nicht vorhanden
+    fb_id = item.get("id") or f"STREAM-{datetime.now().strftime('%Y%m%d%H%M%S')}-{index:04d}"
+    
+    # Emotion zu Style mapping (für ASR-Pipeline)
+    style = item.get("style")
+    if not style and item.get("emotion"):
+        emotion_map = {
+            "anger": "complaint",
+            "angry": "complaint", 
+            "frustration": "complaint",
+            "joy": "praise",
+            "happy": "praise",
+            "satisfaction": "praise",
+            "neutral": "neutral_observation",
+            "sadness": "complaint",
+            "fear": "complaint"
+        }
+        style = emotion_map.get(item["emotion"].lower(), "neutral_observation")
+    
+    # Intent zu Label mapping (falls nötig)
+    label = item.get("label") or item.get("category") or item.get("intent")
+    
+    return {
+        "id": fb_id,
+        "text": text,
+        "label": label,
+        "style": style,
+        "sentiment": item.get("sentiment"),
+        "source_type": item.get("source_type", "voice"),
+        "vehicle_model": item.get("vehicle_model"),
+        "market": item.get("market"),
+        "language": item.get("language", "de"),
+        "timestamp": item.get("timestamp") or datetime.now().isoformat(),
+        "confidence": item.get("confidence"),
+    }
 
 
 @router.post("/upload")
