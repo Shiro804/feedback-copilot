@@ -47,7 +47,7 @@ class FeedbackStats(BaseModel):
 
 @router.get("/", response_model=List[FeedbackItem])
 async def list_feedbacks(
-    limit: int = 10000,
+    limit: int = 50000,
     label: Optional[str] = None,
     style: Optional[str] = None,
     length_bucket: Optional[str] = None,
