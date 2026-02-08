@@ -1,11 +1,4 @@
-"""
-Chat Route - RAG-basierte Frage-Antwort
-
-Literatur:
-- Yang et al. (2025): RAGVA - Guardrails Pattern
-- Wu & Wu (2025): Confliction Detection
-- Praneeth et al. (2025): Advanced RAG mit Re-ranking
-"""
+"""Chat Route - RAG-basierte Frage-Antwort."""
 
 from fastapi import APIRouter, HTTPException
 from pydantic import BaseModel
@@ -48,14 +41,7 @@ class HistoryItem(BaseModel):
 
 @router.post("/", response_model=ChatResponse)
 async def chat(request: ChatRequest):
-    """
-    RAG-basierte Chat-Anfrage mit Quellenangabe.
-    
-    Guardrails (aus Literatur):
-    - Zitationspflicht für jede Aussage
-    - answerable=False bei fehlender Evidenz
-    - Confliction Detection bei widersprüchlichen Quellen
-    """
+    """RAG-basierte Chat-Anfrage mit Quellenangabe."""
     rag_service = RAGService()
     try:
         result = await rag_service.query(

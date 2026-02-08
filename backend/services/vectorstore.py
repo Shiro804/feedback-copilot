@@ -1,21 +1,4 @@
-"""
-VectorStore Service - ChromaDB mit Hybrid Search + Cross-Encoder Reranking
-
-Konzeptmatrix-Referenzen:
-- [P019] Praneeth et al. (2025): Optimization of Customer Feedback Summarization 
-         Using LLM and Advanced Retrieval (BM25 + Embeddings + RRF)
-- [P037] William (2025): Hybrid Search with Langchain and Pinecone Vector Database
-- [P046] Gao et al. (2024): Enhancing RAG with ScaNN and Gemma
-- [P006] Putri et al. (2024): Simplification of Embedding Process in RAG
-- [P042] Nogueira et al. (2019): Cross-Encoder Reranking for Passage Retrieval
-
-Optimierungen (v3):
-- Hybrid Search: BM25 (Keyword) + Vector (Semantic) + Cross-Encoder (Reranking)
-- RRF (Reciprocal Rank Fusion) für initiales Ranking
-- Cross-Encoder für finales Reranking (höchste Qualität)
-- NLTK Stemming für bessere BM25-Tokenisierung
-- Persistenter VectorStore
-"""
+"""VectorStore Service - ChromaDB mit Hybrid Search und Cross-Encoder Reranking."""
 
 from typing import List, Optional, Dict
 import chromadb
@@ -29,7 +12,7 @@ try:
     BM25_AVAILABLE = True
 except ImportError:
     BM25_AVAILABLE = False
-    print("⚠️ rank_bm25 nicht installiert - nur Vector-Suche verfügbar")
+    print("rank_bm25 nicht installiert - nur Vector-Suche verfügbar")
 
 # Cross-Encoder für Reranking
 try:
@@ -37,7 +20,7 @@ try:
     CROSS_ENCODER_AVAILABLE = True
 except ImportError:
     CROSS_ENCODER_AVAILABLE = False
-    print("⚠️ sentence-transformers nicht installiert - kein Cross-Encoder Reranking")
+    print("sentence-transformers nicht installiert - kein Cross-Encoder Reranking")
 
 # NLTK Stemming
 try:
@@ -58,7 +41,7 @@ try:
 except ImportError:
     NLTK_AVAILABLE = False
     stemmer = None
-    print("⚠️ nltk nicht installiert - einfache Tokenisierung")
+    print("nltk nicht installiert - einfache Tokenisierung")
 
 
 # Englische Stopwords (häufigste, für Performance kompakt gehalten)
@@ -76,17 +59,7 @@ STOPWORDS = {
 
 
 def tokenize(text: str) -> List[str]:
-    """
-    Optimierte Tokenisierung für BM25 mit NLTK Stemming.
-    
-    Verbesserungen:
-    1. NLTK word_tokenize (wenn verfügbar)
-    2. Porter Stemming (navigating → navig)
-    3. Stopwords entfernen
-    4. Lowercase + Mindestlänge 2
-    
-    Literatur: Stemming verbessert BM25 Recall signifikant (Manning et al.)
-    """
+    """Tokenisierung für BM25 mit optionalem NLTK Stemming."""
     text = text.lower()
     
     if NLTK_AVAILABLE:
@@ -106,16 +79,7 @@ def tokenize(text: str) -> List[str]:
 
 
 class VectorStoreService:
-    """
-    VectorStore mit ChromaDB + Hybrid Retrieval + Cross-Encoder Reranking.
-    
-    Features (Literatur-basiert):
-    - Persistente Speicherung (ChromaDB persist)
-    - Hybrid Search: BM25 + Vector (Praneeth et al. 2025)
-    - RRF (Reciprocal Rank Fusion) für initiales Ranking
-    - Cross-Encoder Reranking (Nogueira et al. 2019)
-    - NLTK Stemming für bessere Tokenisierung
-    """
+    """VectorStore mit ChromaDB + Hybrid Retrieval + Cross-Encoder Reranking."""
     
     def __init__(self):
         # Persistentes Verzeichnis für ChromaDB
@@ -140,12 +104,7 @@ class VectorStoreService:
         self._cross_encoder_loaded = False
     
     def _get_cross_encoder(self):
-        """
-        Cross-Encoder lazy laden.
-        
-        Model: ms-marco-MiniLM-L-6-v2 (optimiert für Query-Document Relevanz)
-        Literatur: Nogueira et al. (2019) - "Passage Re-ranking with BERT"
-        """
+        """Cross-Encoder lazy laden."""
         if not CROSS_ENCODER_AVAILABLE:
             return None
         
@@ -153,9 +112,9 @@ class VectorStoreService:
             try:
                 # Kompaktes aber effektives Modell
                 self._cross_encoder = CrossEncoder('cross-encoder/ms-marco-MiniLM-L-6-v2')
-                print("✅ Cross-Encoder geladen (ms-marco-MiniLM-L-6-v2)")
+                print("Cross-Encoder geladen (ms-marco-MiniLM-L-6-v2)")
             except Exception as e:
-                print(f"⚠️ Cross-Encoder konnte nicht geladen werden: {e}")
+                print(f"Cross-Encoder konnte nicht geladen werden: {e}")
                 self._cross_encoder = None
             self._cross_encoder_loaded = True
         
@@ -239,14 +198,7 @@ class VectorStoreService:
         self._bm25_index = BM25Okapi(tokenized)
     
     def _cross_encoder_rerank(self, query: str, candidates: List[Dict], top_k: int) -> List[Dict]:
-        """
-        Cross-Encoder Reranking.
-        
-        Literatur: Nogueira et al. (2019)
-        - Cross-Encoder bewertet Query-Document Paare direkt
-        - Höhere Qualität als Bi-Encoder (aber langsamer)
-        - Typisch 10-20% Verbesserung in Retrieval-Qualität
-        """
+        """Cross-Encoder Reranking für höhere Retrieval-Qualität."""
         cross_encoder = self._get_cross_encoder()
         
         if not cross_encoder or len(candidates) == 0:
@@ -269,7 +221,7 @@ class VectorStoreService:
             return reranked[:top_k]
         
         except Exception as e:
-            print(f"⚠️ Cross-Encoder Reranking fehlgeschlagen: {e}")
+            print(f"Cross-Encoder Reranking fehlgeschlagen: {e}")
             return candidates[:top_k]
     
     async def search(
@@ -280,19 +232,7 @@ class VectorStoreService:
         use_reranking: bool = True,  # NEU: Cross-Encoder Reranking
         filters: Optional[dict] = None
     ) -> List[Dict]:
-        """
-        Hybrid Search + Cross-Encoder Reranking.
-        
-        Pipeline:
-        1. Vector Search (Semantic)
-        2. BM25 Search (Keyword)
-        3. RRF Fusion (Kombination)
-        4. Cross-Encoder Reranking (höchste Qualität)
-        
-        Literatur:
-        - Praneeth et al. (2025): Hybrid = BM25 + Vector
-        - Nogueira et al. (2019): Cross-Encoder Reranking
-        """
+        """Hybrid Search mit BM25 + Vector und optionalem Cross-Encoder Reranking."""
         # Where-Filter aufbauen
         where_filter = None
         if filters:

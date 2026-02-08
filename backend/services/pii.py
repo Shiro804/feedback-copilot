@@ -1,20 +1,4 @@
-"""
-PII Service - Anonymisierung für RAG-Pipelines
-
-FORSCHUNGSBEITRAG - Keine existierende Literatur behandelt:
-- PII-Anonymisierung VOR Indizierung in RAG-Pipelines
-- Automotive-spezifische PII-Patterns (VIN, Kennzeichen)
-- Kombination von NER + Regex für In-Car-Feedback
-
-Nächstliegende Konzeptmatrix-Referenzen:
-- [P038] Rathod et al. (2025): Privacy and Security Challenges in LLMs
-- [P082] Yang et al. (2025): Enhancing Security of Local LLM-Based Documents
-- [P083] Lee et al. (2025): Secure Multifaceted-RAG with Security Filter
-
-Aus Onepager:
-- PII-Redaktion (NER+Regex, Hashing)
-- VINs, E-Mails, Telefonnummern, Kennzeichen
-"""
+"""PII Service - Anonymisierung personenbezogener Daten vor Indizierung."""
 
 import re
 import hashlib
@@ -75,14 +59,14 @@ class PIIService:
             try:
                 # Versuche deutsches Modell zu laden
                 self.nlp = spacy.load("de_core_news_sm")
-                print("✅ spaCy NER aktiviert (de_core_news_sm)")
+                print("spaCy NER aktiviert (de_core_news_sm)")
             except OSError:
                 try:
                     # Fallback auf englisches Modell
                     self.nlp = spacy.load("en_core_web_sm")
-                    print("✅ spaCy NER aktiviert (en_core_web_sm)")
+                    print("spaCy NER aktiviert (en_core_web_sm)")
                 except OSError:
-                    print("⚠️ spaCy NER nicht verfügbar - nur Regex-basierte Anonymisierung")
+                    print("spaCy NER nicht verfügbar - nur Regex-basierte Anonymisierung")
                     self.nlp = None
     
     def _ner_anonymize(self, text: str) -> Tuple[str, List[Dict]]:

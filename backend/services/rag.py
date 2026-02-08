@@ -1,13 +1,4 @@
-"""
-RAG Service - LangChain + OpenAI Integration
-
-Konzeptmatrix-Referenzen:
-- [P016] Yang et al. (2025): RAGVA - Engineering RAG-based Virtual Assistants in Practice
-- [P010] Lin et al. (2024): Domain Adaption and Unified Knowledge Base for Dialog Systems
-- [P013] Wu & Wu (2025): Revolutionizing RAG with Confliction Detection (Guardrails)
-- [P032] Benita et al. (2025): Implementation of RAG in Chatbot Systems for Real-Time Support
-- [P034] Sanjani et al. (2025): Performance Analysis of LLM with RAG for Chatbot Optimization
-"""
+"""RAG Service - LangChain + OpenAI Integration für Feedback-Analyse."""
 
 import os
 from typing import List, Optional
@@ -49,15 +40,7 @@ def strip_metadata_prefix(text: str) -> str:
 
 
 class RAGService:
-    """
-    RAG-Pipeline für Feedback-Analyse.
-    
-    Architektur (literaturbasiert):
-    1. Query → Hybrid Retrieval (BM25 + Vector)
-    2. Relevante Chunks → Reranking (optional)
-    3. Context + Query → LLM Generierung
-    4. Guardrails: Zitation, Answerable-Check
-    """
+    """RAG-Pipeline für Feedback-Analyse."""
     
     def __init__(self):
         self.vectorstore = get_vectorstore()
@@ -70,13 +53,7 @@ class RAGService:
         language: str = "de",
         max_sources: int = 10  # Erhöht für besseren Kontext bei 10 Kategorien
     ) -> dict:
-        """
-        RAG-Anfrage mit Quellenangabe.
-        
-        Guardrails (aus Literatur):
-        - Jede Aussage muss Quelle zitieren
-        - answerable=False wenn keine Evidenz
-        """
+        """RAG-Anfrage mit Quellenangabe."""
         
         # Settings dynamisch laden
         settings = get_rag_settings()

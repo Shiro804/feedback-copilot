@@ -1,11 +1,4 @@
-"""
-Search Route - Hybrid Retrieval (BM25 + Vector)
-
-Literatur:
-- Praneeth et al. (2025): RAG Fusion + hierarchisches Chunk-Retrieval
-- Nguyen et al. (2024): Intent-Filtered RAG
-- Gao et al. (2024): ScaNN für effizientes Retrieval
-"""
+"""Search Route - Hybrid Retrieval (BM25 + Vector)."""
 
 from fastapi import APIRouter
 from pydantic import BaseModel
@@ -39,14 +32,7 @@ class SearchResponse(BaseModel):
 
 @router.post("/", response_model=SearchResponse)
 async def search(request: SearchRequest):
-    """
-    Hybrid Search: BM25 + Vector (aus Onepager).
-    
-    Literatur-basiert:
-    - BM25 für Keyword-Matching
-    - Vector für semantische Ähnlichkeit
-    - Optional: Reranker für bessere Precision
-    """
+    """Hybrid Search: BM25 + Vector."""
     results = await vectorstore.search(
         query=request.query,
         top_k=request.top_k,
