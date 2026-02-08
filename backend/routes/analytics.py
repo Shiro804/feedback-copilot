@@ -57,7 +57,7 @@ async def get_overview(
     - Markt
     """
     # Echte Daten aus VectorStore laden
-    results = vectorstore.collection.get(include=["metadatas"], limit=10000)
+    results = vectorstore.collection.get(include=["metadatas"], limit=50000)
     
     if not results or not results.get("metadatas"):
         # Fallback für leeren VectorStore
@@ -153,7 +153,7 @@ async def get_overview(
 @router.get("/aspects")
 async def get_aspects(top_k: int = 20):
     """Top-Aspekte aus dem Feedback."""
-    results = vectorstore.collection.get(include=["metadatas"], limit=10000)
+    results = vectorstore.collection.get(include=["metadatas"], limit=50000)
     
     if not results or not results.get("metadatas"):
         return {"aspects": [], "total": 0}
@@ -173,7 +173,7 @@ async def get_aspects(top_k: int = 20):
 @router.get("/sentiment")
 async def get_sentiment_trends():
     """Sentiment-Verlauf über Zeit basierend auf Style."""
-    results = vectorstore.collection.get(include=["metadatas"], limit=10000)
+    results = vectorstore.collection.get(include=["metadatas"], limit=50000)
     
     if not results or not results.get("metadatas"):
         return {"trends": []}
@@ -193,7 +193,7 @@ async def get_sentiment_trends():
 @router.get("/models")
 async def get_model_stats():
     """Feedback-Statistiken nach Fahrzeugmodell."""
-    results = vectorstore.collection.get(include=["metadatas"], limit=10000)
+    results = vectorstore.collection.get(include=["metadatas"], limit=50000)
     
     if not results or not results.get("metadatas"):
         return {"models": [], "total": 0}
@@ -213,7 +213,7 @@ async def get_model_stats():
 @router.get("/markets")
 async def get_market_stats():
     """Feedback-Statistiken nach Markt."""
-    results = vectorstore.collection.get(include=["metadatas"], limit=10000)
+    results = vectorstore.collection.get(include=["metadatas"], limit=50000)
     
     if not results or not results.get("metadatas"):
         return {"markets": [], "total": 0}
@@ -233,7 +233,7 @@ async def get_market_stats():
 @router.get("/sources")
 async def get_source_stats():
     """Feedback-Statistiken nach Quelle (voice, touch, error)."""
-    results = vectorstore.collection.get(include=["metadatas"], limit=10000)
+    results = vectorstore.collection.get(include=["metadatas"], limit=50000)
     
     if not results or not results.get("metadatas"):
         return {"sources": [], "total": 0}

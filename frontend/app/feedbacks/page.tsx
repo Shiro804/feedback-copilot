@@ -84,7 +84,7 @@ export default function FeedbacksPage() {
 
     const fetchFeedbacks = async () => {
         try {
-            const res = await fetch("http://localhost:8000/api/feedbacks/?limit=10000");
+            const res = await fetch("http://localhost:8000/api/feedbacks/?limit=50000");
             if (res.ok) {
                 setFeedbacks(await res.json());
             }

@@ -115,7 +115,7 @@ export default function AnalyticsPage() {
 
     const fetchData = async () => {
         try {
-            let url = "http://localhost:8000/api/feedbacks/?limit=10000";
+            let url = "http://localhost:8000/api/feedbacks/?limit=50000";
             if (filterLabel) url += `&label=${filterLabel}`;
             if (filterModel) url += `&vehicle_model=${filterModel}`;
 

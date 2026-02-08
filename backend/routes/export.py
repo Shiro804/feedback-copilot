@@ -44,7 +44,7 @@ def get_all_feedbacks(
     market: Optional[str] = None,
     vehicle_model: Optional[str] = None,
     source_type: Optional[str] = None,
-    limit: int = 10000
+    limit: int = 50000
 ) -> List[dict]:
     """Lade alle Feedbacks mit optionalen Filtern."""
     results = vectorstore.collection.get(
