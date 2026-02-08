@@ -1,4 +1,8 @@
-# Documentation folder
+# ===========================================
+# THESIS / DOCUMENTATION (nicht für Kollegen)
+# ===========================================
+
+# Documentation folder (enthält Literatur, Präsentationen, etc.)
 docs/
 
 # Thesis / Presentation files
@@ -10,7 +14,7 @@ PROTOTYP_DOKUMENTATION.md
 PROTOTYP_DOKUMENTATION.pdf
 prototyp_features.md
 
-# Thesis utility scripts
+# Thesis utility scripts (Literaturanalyse etc.)
 analyze_screening.py
 create_literature_excel.py
 format_konzeptmatrix.py
@@ -18,44 +22,96 @@ format_konzeptmatrix.py
 # Personal notes
 befehle.txt
 notizen.txt
+*.txt
 
 # Test files
 test_export.pdf
 
-# Dependencies
+# Prototypen-Zusammenarbeit Ordner
+prototypenzsm/
+
+# Demo data (wird beim Setup neu generiert)
+demo_feedbacks.json
+
+# ===========================================
+# DEPENDENCIES & VIRTUAL ENVIRONMENTS
+# ===========================================
 node_modules/
 __pycache__/
 *.pyc
+*.pyo
 .venv/
 venv/
+env/
+.Python
+pip-log.txt
 
-# Environment files
+# ===========================================
+# ENVIRONMENT FILES (WICHTIG: enthalten API Keys!)
+# ===========================================
 .env
 .env.local
 .env.*.local
+.env.development
+.env.production
 
-# Build outputs
+# ===========================================
+# BUILD OUTPUTS
+# ===========================================
 .next/
 dist/
 build/
+out/
+*.egg-info/
 
-# IDE
+# ===========================================
+# IDE / EDITOR
+# ===========================================
 .idea/
 .vscode/
 *.swp
 *.swo
+*.sublime-*
+.project
+.classpath
+.settings/
 
-# OS files
+# ===========================================
+# OS FILES
+# ===========================================
 .DS_Store
+.DS_Store?
+._*
+.Spotlight-V100
+.Trashes
 Thumbs.db
+ehthumbs.db
+Desktop.ini
 
-# Logs
+# ===========================================
+# LOGS
+# ===========================================
 *.log
 npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+.npm/
 
-# Database / Vector store
+# ===========================================
+# DATABASE / VECTOR STORE (wird lokal generiert)
+# ===========================================
 chroma_db/
 *.db
+*.sqlite
+*.sqlite3
 
-# Misc
+# ===========================================
+# MISC
+# ===========================================
 .gemini/
+*.bak
+*.tmp
+*.temp
+.cache/
+coverage/
+.nyc_output/
