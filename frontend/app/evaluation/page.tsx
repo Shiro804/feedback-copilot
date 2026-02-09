@@ -42,9 +42,9 @@ interface TestQuery {
 }
 
 interface PipelineData {
-    vector: { precision: number; recall: number; mrr: number };
-    hybrid: { precision: number; recall: number; mrr: number };
-    rerank: { precision: number; recall: number; mrr: number };
+    vector: { precision: number; recall: number; mrr: number; response_time_ms?: number };
+    hybrid: { precision: number; recall: number; mrr: number; response_time_ms?: number };
+    rerank: { precision: number; recall: number; mrr: number; response_time_ms?: number };
 }
 
 // =============================================================================
@@ -77,6 +77,12 @@ function PipelineEvolution({ data, title, subtitle }: { data: PipelineData; titl
             label: "MRR",
             description: "Mean Reciprocal Rank - Position des ersten relevanten Ergebnisses. Entscheidend für RAG: Top-Dokument = beste LLM-Antwort!",
             weight: 50
+        },
+        response_time_ms: {
+            icon: "⚡",
+            label: "Latenz",
+            description: "Durchschnittliche Antwortzeit in Millisekunden. Niedrigere Werte = schnellere Suche.",
+            weight: 0
         }
     };
 
@@ -141,6 +147,8 @@ function PipelineEvolution({ data, title, subtitle }: { data: PipelineData; titl
 
     const renderMetricRow = (metricKey: string, value: number) => {
         const info = metricInfo[metricKey];
+        const isTimeMetric = metricKey === "response_time_ms";
+        const displayValue = isTimeMetric ? `${value.toFixed(0)}ms` : formatPercent(value);
         return (
             <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
                 <Tooltip id={`${metricKey}-${value}`} content={info.description} weight={info.weight}>
@@ -159,7 +167,7 @@ function PipelineEvolution({ data, title, subtitle }: { data: PipelineData; titl
                         }}>?</span>
                     </span>
                 </Tooltip>
-                <span style={{ color: "#fff", fontWeight: "bold", fontSize: "1rem" }}>{formatPercent(value)}</span>
+                <span style={{ color: "#fff", fontWeight: "bold", fontSize: "1rem" }}>{displayValue}</span>
             </div>
         );
     };
@@ -234,6 +242,7 @@ function PipelineEvolution({ data, title, subtitle }: { data: PipelineData; titl
                             {renderMetricRow("precision", data.vector.precision)}
                             {renderMetricRow("recall", data.vector.recall)}
                             {renderMetricRow("mrr", data.vector.mrr)}
+                            {data.vector.response_time_ms !== undefined && renderMetricRow("response_time_ms", data.vector.response_time_ms)}
                         </div>
                     </div>
                 </div>
@@ -265,6 +274,7 @@ function PipelineEvolution({ data, title, subtitle }: { data: PipelineData; titl
                             {renderMetricRow("precision", data.hybrid.precision)}
                             {renderMetricRow("recall", data.hybrid.recall)}
                             {renderMetricRow("mrr", data.hybrid.mrr)}
+                            {data.hybrid.response_time_ms !== undefined && renderMetricRow("response_time_ms", data.hybrid.response_time_ms)}
                         </div>
                     </div>
                 </div>
@@ -296,6 +306,7 @@ function PipelineEvolution({ data, title, subtitle }: { data: PipelineData; titl
                             {renderMetricRow("precision", data.rerank.precision)}
                             {renderMetricRow("recall", data.rerank.recall)}
                             {renderMetricRow("mrr", data.rerank.mrr)}
+                            {data.rerank.response_time_ms !== undefined && renderMetricRow("response_time_ms", data.rerank.response_time_ms)}
                         </div>
                     </div>
                 </div>
@@ -423,17 +434,20 @@ export default function EvaluationPage() {
                     vector: {
                         precision: data.results_by_method["vector"]?.avg_precision || 0,
                         recall: data.results_by_method["vector"]?.avg_recall || 0,
-                        mrr: data.results_by_method["vector"]?.avg_mrr || 0
+                        mrr: data.results_by_method["vector"]?.avg_mrr || 0,
+                        response_time_ms: data.results_by_method["vector"]?.avg_response_time_ms
                     },
                     hybrid: {
                         precision: data.results_by_method["hybrid"]?.avg_precision || 0,
                         recall: data.results_by_method["hybrid"]?.avg_recall || 0,
-                        mrr: data.results_by_method["hybrid"]?.avg_mrr || 0
+                        mrr: data.results_by_method["hybrid"]?.avg_mrr || 0,
+                        response_time_ms: data.results_by_method["hybrid"]?.avg_response_time_ms
                     },
                     rerank: {
                         precision: data.results_by_method["hybrid+rerank"]?.avg_precision || 0,
                         recall: data.results_by_method["hybrid+rerank"]?.avg_recall || 0,
-                        mrr: data.results_by_method["hybrid+rerank"]?.avg_mrr || 0
+                        mrr: data.results_by_method["hybrid+rerank"]?.avg_mrr || 0,
+                        response_time_ms: data.results_by_method["hybrid+rerank"]?.avg_response_time_ms
                     }
                 });
             }
@@ -469,17 +483,20 @@ export default function EvaluationPage() {
                     vector: {
                         precision: vectorResult?.precision || 0,
                         recall: vectorResult?.recall || 0,
-                        mrr: vectorResult?.mrr || 0
+                        mrr: vectorResult?.mrr || 0,
+                        response_time_ms: vectorResult?.response_time_ms
                     },
                     hybrid: {
                         precision: hybridResult?.precision || 0,
                         recall: hybridResult?.recall || 0,
-                        mrr: hybridResult?.mrr || 0
+                        mrr: hybridResult?.mrr || 0,
+                        response_time_ms: hybridResult?.response_time_ms
                     },
                     rerank: {
                         precision: rerankResult?.precision || 0,
                         recall: rerankResult?.recall || 0,
-                        mrr: rerankResult?.mrr || 0
+                        mrr: rerankResult?.mrr || 0,
+                        response_time_ms: rerankResult?.response_time_ms
                     }
                 });
             }

@@ -320,7 +320,7 @@ export default function ChatPage() {
                                                                         color="blue"
                                                                         style={{ cursor: "pointer", textDecoration: "none" }}
                                                                     >
-                                                                        {source.id} ({(source.score * 100).toFixed(0)}%)
+                                                                        {source.id}
                                                                     </Badge>
                                                                 </Tooltip>
                                                             ))}
